@@ -10,7 +10,7 @@ The purpose of this simple extension is to allow you customize your character on
 
 ## Specificities
 
-- The JSON items database if fetched from remote server then stored in browser storage
+- The JSON items database is fetched from remote server then stored in browser storage
 - Added items are injected via JS in Raidbots textarea following the SimC syntax
 - Extension developed with React
 - Design via Bootstrap
