@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import Form from 'react-bootstrap/Form'
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -29,6 +29,15 @@ export default function Filters({ metaData, setFilters, setOrder }) {
 		setStatsFilters(filtersCopy)
 	}
 
+	// Callback to sort
+	const onSort = useCallback(
+		o => {
+			setOrderBy(o)
+			setOrder(o)
+		},
+		[setOrderBy, setOrder]
+	)
+
 	// Restore filters preference
 	useEffect(() => {
 		const savedPref = localStorage.getItem('raidbots-extension-preferences')
@@ -40,7 +49,7 @@ export default function Filters({ metaData, setFilters, setOrder }) {
 			setLegendariesFilter(parsedPref.legendaries)
 			onSort(parsedPref.orderBy)
 		}
-	}, [])
+	}, [onSort])
 
 	// Save preference and trigger callback
 	useEffect(() => {
@@ -59,13 +68,7 @@ export default function Filters({ metaData, setFilters, setOrder }) {
 			legendariesFilter === true
 		)
 			localStorage.setItem('raidbots-extension-preferences', JSON.stringify({ ...filters, orderBy: orderBy }))
-	}, [materialFilter, statsFilters, typeFilter, orderBy, legendariesFilter])
-
-	// Callback to sort
-	const onSort = o => {
-		setOrderBy(o)
-		setOrder(o)
-	}
+	}, [materialFilter, statsFilters, typeFilter, orderBy, legendariesFilter, setFilters])
 
 	return (
 		<div className='filters-area row'>

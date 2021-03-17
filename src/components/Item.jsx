@@ -22,7 +22,9 @@ export default function Item({ onItemChange, item }) {
 	const handleDoubleClick = () =>
 		tryHandleInjection(
 			`# ${item.slot}=,id=${item.id},bonus_id=${
-				item.bonus.length > 0 ? item.bonus[item.iLvls.indexOf(iLvl)].replaceAll(':', '/') : ''
+				item.bonus.length > 0 && item.bonus[item.iLvls.indexOf(iLvl)]
+					? item.bonus[item.iLvls.indexOf(iLvl)].replaceAll(':', '/')
+					: ''
 			},ilevel=${iLvl} # ADDED BY EXTENSION`,
 			r => {
 				const selectedCopy = [...selected]

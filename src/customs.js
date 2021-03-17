@@ -43,7 +43,7 @@ function navigate(e, currentTab) {
 export const linkTab = e => navigate(e, false)
 export const linkPage = e => navigate(e, true)
 
-// HOLY FUCK! https://stackoverflow.com/questions/23892547/what-is-the-best-way-to-trigger-onchange-event-in-react-js/46012210#46012210
+// HOLY GRAAL! https://stackoverflow.com/questions/23892547/what-is-the-best-way-to-trigger-onchange-event-in-react-js/46012210#46012210
 export const tryHandleInjection = (raidbotString, callBack, add) => {
 	if (browser && ['tabs'] in browser) {
 		browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -55,7 +55,11 @@ export const tryHandleInjection = (raidbotString, callBack, add) => {
                   window.HTMLTextAreaElement.prototype,
                   'value').set
                 nativeInputValueSetter.call(box, 
-                ${add ? `(box.value += '\\n${raidbotString}')` : `box.value.replace('${raidbotString}','')`})
+                ${
+									add
+										? `('${raidbotString}' + '\\n' + box.value)`
+										: `box.value.replace('${raidbotString}','')`
+								})
                 var ev2 = new Event('input', { bubbles: true })
                 box.dispatchEvent(ev2)
                 return true

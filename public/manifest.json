@@ -1,6 +1,6 @@
 {
   "name": "Raidbots Companion",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "manifest_version": 2,
   "description": "Easily customize your character on Raidbots.com",
   "icons": {"128": "KRE128.png", "48" : "KRE48.png" },

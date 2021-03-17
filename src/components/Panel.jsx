@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import { search } from 'ss-search'
 import Form from 'react-bootstrap/Form'
@@ -18,6 +18,9 @@ export default function Panel({ fetchedData, textArea }) {
 	const [orderBy, setOrderBy] = useState('')
 	const [raidBotsMemory, setRaidBotsMemory] = useState([])
 	const [memoryAdded, setMemoryAdded] = useState(false)
+
+	const dataRef = useRef()
+	dataRef.current = data
 
 	// Read local favorites only once
 	const [localFavorites, setLocalFavorites] = useState([])
@@ -71,7 +74,6 @@ export default function Panel({ fetchedData, textArea }) {
 	// Treat initial data from RaidBots and save it to state
 	useEffect(() => {
 		if (textArea !== '') {
-			// TODO: replace the below with .map? if possible?
 			const existingItems = []
 			textArea
 				.split('\n')
@@ -128,14 +130,15 @@ export default function Panel({ fetchedData, textArea }) {
 
 	// Search and apply filters, then sort the results
 	useEffect(() => {
-		const dataLegFiltered = !filters.legendaries ? [...data].filter(item => item.minQuality < 5) : [...data]
+		const dataLegFiltered = !filters.legendaries
+			? [...dataRef.current].filter(item => item.minQuality < 5)
+			: [...dataRef.current]
 		const dataCopy =
 			searchText === ''
 				? dataLegFiltered
 				: !isNaN(searchText) && Number.isInteger(parseFloat(searchText))
 				? search(dataLegFiltered, ['id'], searchText)
 				: search(dataLegFiltered, ['name'], searchText)
-		// TODO: replace the below with .map? (OR KEEP IT LIKE THAT FOR READABILITY)
 		const newResults = []
 		dataCopy.forEach(item => {
 			if (

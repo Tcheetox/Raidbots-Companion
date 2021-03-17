@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
@@ -6,15 +6,31 @@ import './App.css'
 import { linkPage, linkTab, tabUrl, boxValue } from './customs.js'
 import Panel from './components/Panel'
 
-// import Test from './components/Test.jsx'
+//import Test from './components/Test.jsx'
 
 export default function App() {
 	const [data, setData] = useState({})
 	const [tab, setTab] = useState('')
 	const [textArea, setTextArea] = useState('')
 
+	// Fetch data from the web if not in cache or too old
+	const fetchData = useCallback(async () => {
+		try {
+			const content = await (
+				await fetch('https://thekecha.com/krenier/library/raidbots-extension/data-full.json')
+			).json()
+			setData(content)
+			console.log('> NEW DATABASE FETCHED FROM THEKECHA.COM')
+			// Save fresh data to browser storage
+			localStorage.setItem('raidbots-extension', JSON.stringify({ timestamp: Date.now(), value: content }))
+		} catch (err) {
+			console.log("! Impossible to fetch and store 'data.json' from https://thekecha.com")
+			console.log(err.message)
+		}
+	}, [setData])
+
 	// Try to get data from browser cache otherwise fetch
-	async function retrieveData() {
+	const retrieveData = useCallback(async () => {
 		try {
 			const dataStore = localStorage.getItem('raidbots-extension')
 			if (dataStore) {
@@ -31,23 +47,7 @@ export default function App() {
 			console.log(err.message)
 		}
 		fetchData()
-	}
-
-	// Fetch data from the web if not in cache or too old
-	async function fetchData() {
-		try {
-			const content = await (
-				await fetch('https://thekecha.com/krenier/library/raidbots-extension/data-full.json')
-			).json()
-			setData(content)
-			console.log('> NEW DATABASE FETCHED FROM THEKECHA.COM')
-			// Save fresh data to browser storage
-			localStorage.setItem('raidbots-extension', JSON.stringify({ timestamp: Date.now(), value: content }))
-		} catch (err) {
-			console.log("! Impossible to fetch and store 'data.json' from https://thekecha.com")
-			console.log(err.message)
-		}
-	}
+	}, [fetchData])
 
 	// Initial data trigger and tab URL monitoring
 	useEffect(() => {
@@ -58,7 +58,7 @@ export default function App() {
 			[800]
 		)
 		return () => clearInterval(urlMonitoring)
-	}, [])
+	}, [retrieveData])
 
 	// Gather box content
 	useEffect(() => {
@@ -69,27 +69,24 @@ export default function App() {
 	}, [tab])
 
 	return (
-		<>
-			{/* <div className='raidbots'><Test /></div> */}
-			<div className='app'>
-				<div className='copyright'>
-					Designed by{' '}
-					<a onClick={linkTab} href='https://github.com/Tcheetox' target='_blank' rel='noreferrer'>
-						Tcheetox
-					</a>{' '}
-					to enjoy{' '}
-					<a onClick={linkTab} href='https://www.raidbots.com' target='_blank' rel='noreferrer'>
-						Raidbots.com
-					</a>{' '}
-					<span className='affiliation'>- Non-affiliated with Raidbots</span>
-				</div>
-				<div className={`raidbots-links ${tab !== '' ? 'active' : 'inactive'}`}>
-					<a onClick={linkPage} href='https://www.raidbots.com/simbot/topgear'>
-						<div className={`link ${tab !== '' ? 'active' : 'inactive'}`}>Top gear</div>
-					</a>
-				</div>
-				<Panel fetchedData={data} textArea={textArea} />
+		<div className='app'>
+			<div className='copyright'>
+				Designed by{' '}
+				<a onClick={linkTab} href='https://github.com/Tcheetox' target='_blank' rel='noreferrer'>
+					Tcheetox
+				</a>{' '}
+				to enjoy{' '}
+				<a onClick={linkTab} href='https://www.raidbots.com' target='_blank' rel='noreferrer'>
+					Raidbots.com
+				</a>{' '}
+				<span className='affiliation'>- Non-affiliated with Raidbots</span>
 			</div>
-		</>
+			<div className={`raidbots-links ${tab !== '' ? 'active' : 'inactive'}`}>
+				<a onClick={linkPage} href='https://www.raidbots.com/simbot/topgear'>
+					<div className={`link ${tab !== '' ? 'active' : 'inactive'}`}>Top gear</div>
+				</a>
+			</div>
+			<Panel fetchedData={data} textArea={textArea} />
+		</div>
 	)
 }
