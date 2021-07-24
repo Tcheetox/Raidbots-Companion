@@ -2,14 +2,23 @@ html,
 body,
 #root,
 .app {
-	background-color: #333339;
 	max-width: 600px;
-	overflow-x: hidden;
 	scrollbar-width: thin;
+	background-color: #292929;
+	width: var(--panel-width);
+	min-width: var(--panel-width);
+	margin-left: auto;
+	margin-right: 0;
+	position: relative;
+	overflow-x: hidden;
 }
 .app {
 	min-height: 800px;
 	overflow: hidden;
+}
+.no-results {
+	color: white;
+	text-align: center;
 }
 /* STYLING CHROME SCROLLBAR */
 body::-webkit-scrollbar {
@@ -41,20 +50,28 @@ button {
 	--transition: 100ms;
 }
 
-/* TEMP */
-.test-area {
-	color: white;
-}
 .raidbots {
 	width: 70%;
 }
-
-.app {
+.logo-overlay {
+	position: absolute;
+	user-select: none;
+	right: 1rem;
+	top: 1rem;
+}
+.logo-overlay::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 	background-color: #292929;
-	width: var(--panel-width);
-	min-width: var(--panel-width);
-	margin-left: auto;
-	margin-right: 0;
+	opacity: 0.55;
+}
+.logo {
+	height: 3rem;
+	width: 3rem;
 }
 
 /* SEARCH */
@@ -66,15 +83,31 @@ button {
 	margin: 1.5rem auto 0.5rem auto;
 }
 .search-area input {
-	height: 2rem;
+	height: 1.8rem;
 }
 
+.main.debug .test-area {
+	margin-top: 0.5rem;
+	position: absolute;
+	left: -600px;
+	width: 600px;
+	z-index: 10;
+}
+.no-results,
+.loader-wrapper {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
 .results {
 	padding: 0.5rem;
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;
+	flex-grow: 1;
 }
+
 /* ITEM */
 .item {
 	display: inline-flex;
@@ -86,6 +119,7 @@ button {
 	cursor: pointer;
 	position: relative;
 	user-select: none;
+	height: 50px;
 }
 .item.selected {
 	background-color: #222222;
@@ -97,6 +131,11 @@ button {
 }
 .item-info-row {
 	display: flex;
+}
+.item-info-ilevels {
+	height: 22px;
+	display: flex;
+	align-items: center;
 }
 
 .item > a {
@@ -154,10 +193,14 @@ button {
 	font-weight: 600;
 	border-width: 1px;
 	border-radius: 1rem;
-	padding-left: 0.3rem;
-	padding-right: 0.3rem;
+	padding-left: 0.25rem;
 	line-height: 14px;
 	border-color: #222222;
+	margin-left: 0.25rem;
+	border-style: solid;
+}
+.iLvl:nth-child(1) {
+	margin-left: 0;
 }
 .iLvl.selected {
 	border-color: #ffbb33;
@@ -193,6 +236,7 @@ button {
 .raidbots-links > a {
 	width: min-content;
 	display: block;
+	text-decoration: none;
 }
 .raidbots-links.active {
 	border-bottom-color: var(--raidbots-green-color);
@@ -239,17 +283,36 @@ button {
 	height: 1.8rem;
 	padding-top: 0;
 	padding-bottom: 0;
-	/* white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; */
+}
+.filters-area .dropdown-toggle:not(.materials) {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.filters-area .dropdown {
+	padding: 0;
+	width: unset;
+}
+.filters-area .dropdown-menu {
+	min-width: 100%;
+	margin-top: -1px;
+	border-radius: 0.5rem;
+}
+.form-check-input {
+	cursor: pointer;
+}
+.search-area input {
+	border-radius: 0.5rem;
 }
 .filters-area .dropdown:nth-child(1) > .dropdown-toggle {
+	border-radius: 0.5rem;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 	width: 86px;
 	max-width: 86px;
 }
 .filters-area .dropdown:nth-child(4) > .dropdown-toggle {
+	border-radius: 0.5rem;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 	width: 108px;
@@ -290,14 +353,26 @@ button {
 
 /* SLIDER */
 .custom-range {
-	width: 76%;
+	width: 72%;
 	margin-left: 11.5%;
 	padding-top: 2px;
+	padding-left: 2%;
+	background-color: inherit;
+	-webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+	background: transparent; /* Otherwise white in Chrome */
 }
+
+.custom-range::-webkit-slider-thumb {
+	-webkit-appearance: none;
+}
+
 .custom-range::-webkit-slider-thumb {
 	background: var(--raidbots-yellow-color);
 	height: 10px;
 	width: 10px;
+	border-radius: 100%;
+	border: 1px solid gray;
+	margin-top: -4px;
 }
 .custom-range::-moz-range-thumb {
 	background: var(--raidbots-yellow-color);
@@ -312,10 +387,16 @@ button {
 }
 .custom-range::-moz-range-track {
 	height: 2px !important;
+	background-color: var(--darker-yellow-color);
+	border-radius: 1rem;
 }
 .custom-range::-webkit-slider-runnable-track {
 	height: 2px !important;
+	margin-top: -10px;
+	background-color: var(--darker-yellow-color);
+	border-radius: 1rem;
 }
+
 .infinite-scroll-component,
 .results > * {
 	width: 100%;
@@ -357,4 +438,40 @@ button {
 
 .iLvl.slider {
 	width: 200px;
+}
+
+.item .context-menu {
+	position: fixed;
+	background-color: #222222;
+	z-index: 10;
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	cursor: default;
+}
+
+.context-menu .option img {
+	margin-left: 0;
+	margin-right: auto;
+	border-radius: 0.5rem;
+	height: 22px;
+	width: 22px;
+}
+.context-menu .option span {
+	margin: 0 0.3rem;
+	color: white;
+	font-size: 0.9rem;
+}
+.context-menu .option {
+	display: flex;
+	align-items: center;
+	padding: 0.1rem;
+	margin: 0.1rem 0;
+	border-radius: 0.5rem;
+	border: 1px solid #292929;
+	background-color: #292929;
+}
+.context-menu .option:hover {
+	border: 1px solid var(--raidbots-yellow-color);
 }

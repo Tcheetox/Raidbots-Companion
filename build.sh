@@ -11,12 +11,20 @@ build() {
     react-scripts build
 
     mkdir -p dist
+    mkdir -p distZip
     cp -r build/* dist
 
-    mv dist/index.html dist/popup.html
-    rm dist/foxifest.json
+    rm dist/manifest.json
+    cp public/foxifest.json dist/manifest.json
+    cd dist/
+    C:/Windows/System32/tar.exe -a -c -f C:/Users/kevin/PartialSync/raidbots-extension/distZip/RaidBots-Fox-Extension.zip *
+
+    cd  ..
+    rm dist/manifest.json
+    cp public/manifest.json dist/manifest.json
     cd dist/
     C:/Windows/System32/tar.exe -a -c -f C:/Users/kevin/PartialSync/raidbots-extension/distZip/RaidBots-Chrome-Extension.zip *
+
     #read
 }
 

@@ -1,18 +1,18 @@
 {
   "name": "Raidbots Companion",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "manifest_version": 2,
-  "description": "Easily customize your character on Raidbots.com",
+  "description": "Easy character customization on Raidbots.com",
   "icons": {"128": "KRE128.png", "48" : "KRE48.png" },
   "browser_action": {
       "default_icon": "KRE128.png",
-      "default_popup": "popup.html",
+      "default_popup": "index.html",
       "default_title" :  "Raidbots Companion"
   },
   "permissions": [
-    "https://www.raidbots.com/*", "tabs"
+    "https://www.raidbots.com/*", "https://raidbots.com/*", "tabs"
   ],
-  "content_security_policy": "script-src 'self' https://wow.zamimg.com; object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "browser_specific_settings": {
     "gecko": {
       "id": "kevin.renier@thekecha.com",
